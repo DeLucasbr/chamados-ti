@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Tickets - Hospital Santa Clara</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --color-primary: #0066CC;
+            --color-primary-hover: #0052A3;
+            --color-secondary: #4A90E2;
+            --color-success: #28A745;
+            --color-danger: #DC3545;
+            --color-warning: #FFC107;
+            --color-info: #007BFF;
+            --color-light: #F8F9FA;
+            --color-dark: #343A40;
+            --color-white: #FFFFFF;
+            --color-gray: #6C757D;
+            --color-gray-light: #E9ECEF;
+            --color-bg: #f4f7f6;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--color-bg);
+            min-height: 100vh;
+            color: var(--color-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        .header {
+            background: var(--color-white);
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: var(--color-primary);
+            font-size: 26px;
+            font-weight: 700;
+        }
+
+        .header .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header .user-info span {
+            font-size: 15px;
+        }
+
+        /* Public Form Styles */
+        .public-interface {
+            max-width: 700px;
+            margin: 40px auto;
+            background: var(--color-white);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .public-interface h1 {
+            text-align: center;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .public-interface .subtitle {
+            text-align: center;
+            color: var(--color-gray);
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        .public-interface footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+            color: var(--color-gray);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--color-dark);
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background-color: #fff;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-block;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: var(--color-white);
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 102, 204, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--color-gray);
+            color: var(--color-white);
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-danger {
+            background: var(--color-danger);
+            color: var(--color-white);
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .admin-link {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 14px;
+        }
+
+        .admin-link a {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .admin-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Login Styles */
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            background: var(--color-white);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .login-container h2 {
+            text-align: center;
+            color: var(--color-primary);
+            margin-bottom: 30px;
+        }
+
+        /* Alert Styles */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 15px;
+            display: none;
+            border: 1px solid transparent;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+        }
+
+        /* Admin Dashboard Styles */
+        .admin-interface {
+            background: var(--color-white);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .filters > div {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .filters label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--color-dark);
+            font-size: 14px;
+        }
+        
+        .filters input,
+        .filters select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background-color: #fff;
+        }
+        
+        .filters input:focus,
+        .filters select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
+        }
+
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 30px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            /* Força larguras de coluna consistentes */
+            table-layout: fixed; 
+        }
+
+        table th {
+            background: #f8f9fa;
+            color: var(--color-dark);
+            padding: 14px 10px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #dee2e6;
+            white-space: nowrap;
+        }
+
+        table td {
+            padding: 14px 10px;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: middle;
+            /* Evita que o texto quebre e force o layout */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* Zebra striping */
+        table tr:nth-child(even) {
+            background: #fcfcfc;
+        }
+
+        table tr:hover {
+            background: #f1f7ff;
+        }
+
+        /* Definição das larguras das colunas */
+        table th:nth-child(1), table td:nth-child(1) { width: 14%; } /* ID */
+        table th:nth-child(2), table td:nth-child(2) { width: 15%; } /* Nome */
+        table th:nth-child(3), table td:nth-child(3) { width: 13%; } /* Setor */
+        table th:nth-child(4), table td:nth-child(4) { width: 15%; } /* Tipo */
+        table th:nth-child(5), table td:nth-child(5) { width: 13%; } /* Urgência */
+        table th:nth-child(6), table td:nth-child(6) { width: 15%; } /* Responsáveis */
+        table th:nth-child(7), table td:nth-child(7) { width: 15%; } /* Data Inicial/Final */
+
+
+        table input[type="date"],
+        table select {
+            padding: 8px 10px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 13px;
+            width: 100%;
+            font-family: inherit;
+        }
+        
+        table select[multiple] {
+            min-height: 60px;
+            padding: 5px;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .status-em-aberto { background: #fee2e2; color: #b91c1c; }
+        .status-em-andamento { background: #fef3c7; color: #b45309; }
+        .status-aguardando-pecas { background: #dbeafe; color: #1e40af; }
+        .status-concluido { background: #d1fae5; color: #047857; }
+
+        /* Dashboard Stats */
+        .dashboard {
+            margin-top: 30px;
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--color-white);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            border-left: 5px solid;
+        }
+
+        .stat-card.em-aberto { border-left-color: var(--color-danger); }
+        .stat-card.em-andamento { border-left-color: var(--color-warning); }
+        .stat-card.aguardando-pecas { border-left-color: var(--color-info); }
+        .stat-card.concluido { border-left-color: var(--color-success); }
+
+        .stat-card h3 {
+            font-size: 15px;
+            color: var(--color-gray);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .stat-card .count {
+            font-size: 34px;
+            font-weight: 700;
+            color: var(--color-dark);
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+        }
+
+        .chart-card {
+            background: var(--color-white);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .chart-card h3 {
+            margin-bottom: 20px;
+            color: var(--color-primary);
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 350px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .filters {
+                flex-direction: column;
+            }
+
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 12px;
+                /* Permite rolagem horizontal em telas pequenas */
+                table-layout: auto; 
+            }
+            
+            table th, table td {
+                white-space: pre; /* Evita quebra de linha */
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .ticket-id {
+            font-weight: 600;
+            color: var(--color-primary);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        
+        .ticket-id:hover {
+            color: var(--color-primary-hover);
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+        
+        
+        /* Modal (Pop-up) Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 30px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 700px;
+            border-radius: 15px;
+            box-shadow: var(--shadow-lg);
+            animation: slideIn 0.3s;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .modal-header h2 {
+            color: var(--color-primary);
+            font-size: 22px;
+        }
+
+        .close-button {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: #000;
+            text-decoration: none;
+        }
+        
+        .modal-body .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .modal-body .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .modal-body .info-item {
+            background-color: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .modal-body .info-item strong {
+            display: block;
+            font-size: 13px;
+            color: var(--color-gray);
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+        
+        .modal-body .info-item span {
+            font-size: 15px;
+            color: var(--color-dark);
+        }
+        
+        .modal-body .info-full {
+            grid-column: 1 / -1;
+        }
+
+        .modal-footer {
+            margin-top: 30px;
+            text-align: right;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Public Interface -->
+    <div id="publicInterface" class="hidden">
+        <div class="public-interface">
+            <h1>Hospital Santa Clara</h1>
+            <p class="subtitle">Sistema de Abertura de Chamados - TI</p>
+            
+            <div id="successAlert" class="alert alert-success"></div>
+            <div id="errorAlert" class="alert alert-danger"></div>
+            
+            <form id="ticketForm">
+                <div class="form-group">
+                    <label for="nome">Nome do Colaborador *</label>
+                    <input type="text" id="nome" name="nome" placeholder="Digite seu nome completo" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="setor">Setor *</label>
+                    <select id="setor" name="setor" required>
+                        <option value="">Selecione seu setor</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email (Opcional)</label>
+                    <input type="email" id="email" name="email" placeholder="seu.email@hospital.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="tipoProblema">Tipo de Problema *</label>
+                    <input type="text" id="tipoProblema" name="tipoProblema" placeholder="Ex: Impressora não funciona, Computador lento..." required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="descricao">Descrição Detalhada *</label>
+                    <textarea id="descricao" name="descricao" rows="5" placeholder="Descreva o problema em detalhes..." required></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Enviar Ticket</button>
+            </form>
+            
+            <div class="admin-link">
+                <a href="#/admin">Acesso da Equipe de TI</a>
+            </div>
+            
+            <footer>
+                Desenvolvido por Lucas Amorim
+            </footer>
+        </div>
+    </div>
+
+    <!-- Login Interface -->
+    <div id="loginInterface" class="hidden">
+        <div class="login-container">
+            <h2>Login - Equipe de TI</h2>
+            
+            <div id="loginErrorAlert" class="alert alert-danger"></div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Usuário</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Entrar</button>
+            </form>
+            
+            <div class="admin-link">
+                <a href="#/">Voltar para página inicial</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminInterface" class="hidden">
+        <div class="container">
+            <div class="header">
+                <h1>Painel de Gerenciamento de Tickets - TI</h1>
+                <div class="user-info">
+                    <span id="adminUsername">Usuário: <strong>Admin</strong></span>
+                    <button class="btn btn-danger btn-small" onclick="logout()">Sair</button>
+                </div>
+            </div>
+            
+            <div class="admin-interface">
+                <h2 style="margin-bottom: 20px;">Tickets Ativos</h2>
+                
+                <div class="filters">
+                    <div>
+                        <label>Filtrar por Status:</label>
+                        <select id="filterStatus" onchange="filterTickets()">
+                            <option value="">Todos</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Filtrar por Setor:</label>
+                        <select id="filterSetor" onchange="filterTickets()">
+                            <option value="">Todos</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Buscar por Nome:</label>
+                        <input type="text" id="filterNome" placeholder="Digite o nome..." oninput="filterTickets()">
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table id="ticketsTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Setor</th>
+                                <th>Tipo</th>
+                                <th>Urgência</th>
+                                <th>Responsáveis</th>
+                                <th>Datas</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ticketsTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="dashboard">
+                <h2 style="margin-bottom: 20px;">Dashboard de Análise</h2>
+                
+                <div class="stats-cards">
+                    <div class="stat-card em-aberto">
+                        <h3>Em Aberto</h3>
+                        <div class="count" id="countEmAberto">0</div>
+                    </div>
+                    <div class="stat-card em-andamento">
+                        <h3>Em Andamento</h3>
+                        <div class="count" id="countEmAndamento">0</div>
+                    </div>
+                    <div class="stat-card aguardando-pecas">
+                        <h3>Aguardando Peças</h3>
+                        <div class="count" id="countAguardandoPecas">0</div>
+                    </div>
+                    <div class="stat-card concluido">
+                        <h3>Concluídos</h3>
+                        <div class="count" id="countConcluido">0</div>
+                    </div>
+                </div>
+                
+                <div class="charts-container">
+                    <div class="chart-card">
+                        <h3>Tickets por Setor</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="sectorChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Distribuição por Urgência</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="urgencyChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Ticket Detail Modal -->
+    <div id="ticketModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTicketId">Ticket #</h2>
+                <span class="close-button">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>Colaborador</strong>
+                        <span id="modalNome"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Setor</strong>
+                        <span id="modalSetor"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Email</strong>
+                        <span id="modalEmail"></span>
+                    </div>
+                    <div class="info-item">
+                        <strong>Data Abertura</strong>
+                        <span id="modalDataAbertura"></span>
+                    </div>
+                    <div class="info-item info-full">
+                        <strong>Tipo de Problema</strong>
+                        <span id="modalTipoProblema"></span>
+                    </div>
+                    <div class="info-item info-full">
+                        <strong>Descrição do Colaborador</strong>
+                        <span id="modalDescricao" style="white-space: pre-wrap; line-height: 1.5;"></span>
+                    </div>
+                </div>
+                
+                <!-- O campo de Observações T.I. foi removido daqui -->
+                
+            </div>
+            <div class="modal-footer">
+                <!-- O botão Salvar Observações foi removido daqui -->
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // --- Configuração Global ---
+        // Deixar vazio '' para produção (para funcionar em qualquer IP da rede)
+        // Usar 'http://127.0.0.1:5000' para testes locais e no preview
+        const API_URL = ''; 
+
+        // --- Estado da Aplicação ---
+        let isAuthenticated = false;
+        let tickets = []; // Cache local dos tickets
+        let config = {}; // Cache da configuração (setores, equipe, etc.)
+        let currentOpenTicketId = null; // ID do ticket aberto no modal
+
+        // Instâncias dos Gráficos
+        let sectorChartInstance = null;
+        let urgencyChartInstance = null;
+
+        // --- Inicialização ---
+        
+        // Inicializa tudo quando o DOM estiver pronto
+        window.addEventListener('DOMContentLoaded', init);
+
+        async function init() {
+            // Configura o roteamento
+            setupRouting();
+            
+            // Configura os listeners de eventos estáticos (login, etc.)
+            setupEventListeners();
+
+            // Carrega a configuração (setores, equipe) do back-end
+            await fetchConfig();
+            
+            // Lida com a rota atual (ex: #/ ou #/admin)
+            handleRoute();
+        }
+
+        function setupEventListeners() {
+            // Formulário de novo ticket
+            document.getElementById('ticketForm').addEventListener('submit', handleTicketSubmit);
+            
+            // Formulário de login
+            document.getElementById('loginForm').addEventListener('submit', handleLoginSubmit);
+            
+            // --- Listeners do Modal ---
+            const modal = document.getElementById('ticketModal');
+            
+            // Botão 'X' para fechar
+            document.querySelector('.close-button').addEventListener('click', () => {
+                modal.style.display = 'none';
+            });
+            
+            // Clicar fora do modal para fechar
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+
+            // O event listener para 'saveModalButton' foi removido
+        }
+
+        async function fetchConfig() {
+            try {
+                const response = await fetch(`${API_URL}/api/config`);
+                if (!response.ok) {
+                    throw new Error('Falha ao carregar configuração');
+                }
+                config = await response.json();
+                
+                // Popula os dropdowns com a configuração carregada
+                populateSectorDropdowns();
+                populateStatusDropdown();
+                
+            } catch (error) {
+                console.error("Erro ao carregar config:", error);
+                showAlert('errorAlert', `Erro fatal: Não foi possível carregar a configuração do servidor.`);
+            }
+        }
+
+        // --- Popular Dropdowns ---
+
+        function populateSectorDropdowns() {
+            const setorSelect = document.getElementById('setor');
+            const filterSetorSelect = document.getElementById('filterSetor');
+            
+            if (!config.sectors || !setorSelect || !filterSetorSelect) return;
+
+            // Limpa opções existentes (exceto a primeira "Selecione...")
+            setorSelect.innerHTML = '<option value="">Selecione seu setor</option>';
+            filterSetorSelect.innerHTML = '<option value="">Todos</option>';
+            
+            config.sectors.forEach(sector => {
+                const option = document.createElement('option');
+                option.value = sector;
+                option.textContent = sector;
+                setorSelect.appendChild(option);
+                
+                const filterOption = document.createElement('option');
+                filterOption.value = sector;
+                filterOption.textContent = sector;
+                filterSetorSelect.appendChild(filterOption);
+            });
+        }
+        
+        function populateStatusDropdown() {
+            const filterStatusSelect = document.getElementById('filterStatus');
+            if (!config.status_options || !filterStatusSelect) return;
+            
+            filterStatusSelect.innerHTML = '<option value="">Todos</option>';
+            
+            config.status_options.forEach(status => {
+                const option = document.createElement('option');
+                option.value = status;
+                option.textContent = status;
+                filterStatusSelect.appendChild(option);
+            });
+        }
+
+
+        // --- Roteamento ---
+
+        function setupRouting() {
+            // Ouve mudanças na hash (ex: #/admin)
+            window.addEventListener('hashchange', handleRoute);
+        }
+
+        function handleRoute() {
+            const hash = window.location.hash || '#/';
+            
+            // Esconde todas as interfaces
+            document.getElementById('publicInterface').classList.add('hidden');
+            document.getElementById('loginInterface').classList.add('hidden');
+            document.getElementById('adminInterface').classList.add('hidden');
+            
+            if (hash === '#/' || hash === '') {
+                // Rota principal: Formulário público
+                document.getElementById('publicInterface').classList.remove('hidden');
+            } else if (hash === '#/admin') {
+                // Rota de admin: Verifica autenticação
+                if (isAuthenticated) {
+                    document.getElementById('adminInterface').classList.remove('hidden');
+                    // Carrega os dados da dashboard
+                    loadAdminDashboard(); 
+                } else {
+                    document.getElementById('loginInterface').classList.remove('hidden');
+                }
+            }
+        }
+
+        // --- Interface Pública (Formulário) ---
+
+        async function handleTicketSubmit(e) {
+            e.preventDefault();
+            
+            const form = e.target;
+            const nome = document.getElementById('nome').value.trim();
+            const setor = document.getElementById('setor').value;
+            const email = document.getElementById('email').value.trim();
+            const tipoProblema = document.getElementById('tipoProblema').value.trim();
+            const descricao = document.getElementById('descricao').value.trim();
+            
+            // Validação simples
+            if (nome.length < 3) {
+                showAlert('errorAlert', 'Nome deve ter pelo menos 3 caracteres');
+                return;
+            }
+            if (!setor) {
+                showAlert('errorAlert', 'Por favor, selecione um setor');
+                return;
+            }
+            if (descricao.length < 10) {
+                showAlert('errorAlert', 'Descrição deve ter pelo menos 10 caracteres');
+                return;
+            }
+            
+            const newTicketData = {
+                nome,
+                setor,
+                email,
+                tipoProblema,
+                descricao
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/api/tickets`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newTicketData)
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Erro ao criar ticket');
+                }
+
+                const ticket = await response.json();
+                
+                // Sucesso
+                showAlert('successAlert', `Ticket #${ticket.id} criado com sucesso! Nossa equipe de TI entrará em contato em breve.`);
+                form.reset();
+                
+            } catch (error) {
+                console.error("Erro ao enviar ticket:", error);
+                showAlert('errorAlert', `Erro ao enviar ticket: ${error.message}. Tente novamente.`);
+            }
+        }
+
+
+        // --- Interface de Login ---
+
+        async function handleLoginSubmit(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const response = await fetch(`${API_URL}/api/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                if (response.status === 401) {
+                    showAlert('loginErrorAlert', 'Usuário ou senha incorretos');
+                    return;
+                }
+                
+                if (!response.ok) {
+                    throw new Error('Erro de rede ou servidor');
+                }
+
+                await response.json();
+                
+                // Sucesso no Login
+                isAuthenticated = true;
+                document.getElementById('adminUsername').innerHTML = `Usuário: <strong>${username}</strong>`;
+                window.location.hash = '#/admin'; // Redireciona para o painel
+                
+                // --- CORREÇÃO DO REFRESH ---
+                // Força a exibição da página admin imediatamente, sem precisar de refresh
+                handleRoute(); 
+                
+            } catch (error) {
+                console.error("Erro no login:", error);
+                showAlert('loginErrorAlert', 'Erro ao conectar com o servidor. Tente novamente.');
+            }
+        }
+
+        function logout() {
+            isAuthenticated = false;
+            window.location.hash = '#/';
+        }
+
+
+        // --- Painel de Administração ---
+
+        async function loadAdminDashboard() {
+            // Carrega os tickets e atualiza a tabela e os gráficos
+            await loadTickets();
+            updateDashboard();
+        }
+
+        async function loadTickets() {
+            try {
+                const response = await fetch(`${API_URL}/api/tickets`);
+                if (!response.ok) {
+                    throw new Error('Falha ao carregar tickets');
+                }
+                tickets = await response.json();
+                renderTicketsTable(); // Re-renderiza a tabela
+            } catch (error) {
+                console.error("Erro ao carregar tickets:", error);
+                alert("Erro grave: Não foi possível carregar os tickets do servidor.");
+            }
+        }
+
+        // Renderiza a tabela principal com base nos filtros
+        function renderTicketsTable() {
+            const tbody = document.getElementById('ticketsTableBody');
+            tbody.innerHTML = '';
+            
+            const filteredTickets = getFilteredTickets();
+            
+            filteredTickets.forEach(ticket => {
+                const row = document.createElement('tr');
+                
+                const statusClass = ticket.status.toLowerCase().replace(/\s+/g, '-');
+                const formattedDate = formatDate(ticket.dataAbertura);
+                
+                // Lógica para data inicial/final
+                let dateDisplay = '';
+                if (ticket.dataInicial) {
+                    dateDisplay = `Início: ${formatDate(ticket.dataInicial, true)}`;
+                    if (ticket.dataFinal) {
+                        dateDisplay += `<br>Fim: ${formatDate(ticket.dataFinal, true)}`;
+                    }
+                }
+
+                row.innerHTML = `
+                    <td>
+                        <span class="ticket-id" onclick="openTicketModal('${ticket.id}')">${ticket.id}</span>
+                    </td>
+                    <td>${ticket.nome}</td>
+                    <td>${ticket.setor}</td>
+                    <td title="${ticket.tipoProblema}">${truncateText(ticket.tipoProblema, 30)}</td>
+                    <td>
+                        <select onchange="updateTicket('${ticket.id}', 'urgencia', this.value)">
+                            ${config.urgency_levels.map(level => 
+                                `<option value="${level}" ${ticket.urgencia === level ? 'selected' : ''}>${level}</option>`
+                            ).join('')}
+                        </select>
+                    </td>
+                    <td>
+                        <select multiple onchange="updateTicket('${ticket.id}', 'responsaveis', Array.from(this.selectedOptions).map(o => o.value))">
+                            ${config.it_team.map(member => 
+                                `<option value="${member}" ${ticket.responsaveis.includes(member) ? 'selected' : ''}>${member}</option>`
+                            ).join('')}
+                        </select>
+                    </td>
+                    <td>
+                        <input type="date" value="${ticket.dataInicial}" onchange="updateTicket('${ticket.id}', 'dataInicial', this.value)" style="margin-bottom: 5px;">
+                        <input type="date" value="${ticket.dataFinal}" onchange="updateTicket('${ticket.id}', 'dataFinal', this.value)">
+                    </td>
+                `;
+                
+                // Adiciona o status (com badge)
+                const statusCell = document.createElement('td');
+                statusCell.innerHTML = `
+                    <select onchange="updateTicket('${ticket.id}', 'status', this.value)">
+                        ${config.status_options.map(status => 
+                            `<option value="${status}" ${ticket.status === status ? 'selected' : ''}>${status}</option>`
+                        ).join('')}
+                    </select>
+                `;
+                // Insere a célula de status na posição correta (após 'Tipo')
+                row.insertBefore(statusCell, row.children[4]);
+                
+                // Ajusta a largura da coluna de Status na Tabela
+                row.cells[4].style.width = '13%';
+
+                tbody.appendChild(row);
+            });
+        }
+
+        // Atualiza um campo do ticket (chamado pelos 'onchange' da tabela)
+        async function updateTicket(ticketId, field, value) {
+            
+            // Encontra o ticket no cache local
+            const ticket = tickets.find(t => t.id === ticketId);
+            if (!ticket) return;
+
+            // Cria uma cópia atualizada do ticket
+            const updatedTicket = { ...ticket, [field]: value };
+            
+            // Lógica especial para data: se data inicial muda, status muda
+            if (field === 'dataInicial' && value && ticket.status === 'Em aberto') {
+                updatedTicket.status = 'Em andamento';
+            }
+            // Lógica para data final: se data final é preenchida, status muda
+            if (field === 'dataFinal' && value) {
+                updatedTicket.status = 'Concluído';
+            }
+            
+            try {
+                // Envia o ticket *inteiro* e atualizado para o back-end
+                const response = await fetch(`${API_URL}/api/tickets/${ticketId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updatedTicket)
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Erro ao atualizar ticket');
+                }
+
+                const savedTicket = await response.json();
+                
+                // Atualiza o cache local com o ticket salvo (resposta do servidor)
+                const index = tickets.findIndex(t => t.id === ticketId);
+                if (index !== -1) {
+                    tickets[index] = savedTicket;
+                }
+                
+                // Re-renderiza a tabela e o dashboard
+                renderTicketsTable();
+                updateDashboard();
+
+            } catch (error) {
+                console.error("Erro ao atualizar ticket:", error);
+                // Usamos alert() aqui pois é um erro crítico de UI
+                alert(`Falha ao salvar alteração: ${error.message}\n\nA página será recarregada para garantir a consistência dos dados.`);
+                // Recarrega os tickets do servidor para evitar inconsistência
+                await loadTickets();
+            }
+        }
+
+        // Filtra os tickets para exibição na tabela
+        function getFilteredTickets() {
+            const statusFilter = document.getElementById('filterStatus').value;
+            const setorFilter = document.getElementById('filterSetor').value;
+            const nomeFilter = document.getElementById('filterNome').value.toLowerCase();
+            
+            return tickets.filter(ticket => {
+                const matchStatus = !statusFilter || ticket.status === statusFilter;
+                const matchSetor = !setorFilter || ticket.setor === setorFilter;
+                const matchNome = !nomeFilter || ticket.nome.toLowerCase().includes(nomeFilter);
+                
+                return matchStatus && matchSetor && matchNome;
+            });
+        }
+
+        // Função global chamada pelos filtros (onchange, oninput)
+        function filterTickets() {
+            renderTicketsTable();
+        }
+
+        // --- Modal (Pop-up) ---
+        
+        function openTicketModal(ticketId) {
+            const ticket = tickets.find(t => t.id === ticketId);
+            if (!ticket) return;
+            
+            currentOpenTicketId = ticketId; // Armazena o ID do ticket aberto
+            
+            // Preenche os campos do modal
+            document.getElementById('modalTicketId').textContent = `Ticket ${ticket.id}`;
+            document.getElementById('modalNome').textContent = ticket.nome;
+            document.getElementById('modalSetor').textContent = ticket.setor;
+            document.getElementById('modalEmail').textContent = ticket.email || 'Não informado';
+            document.getElementById('modalDataAbertura').textContent = formatDate(ticket.dataAbertura);
+            document.getElementById('modalTipoProblema').textContent = ticket.tipoProblema;
+            document.getElementById('modalDescricao').textContent = ticket.descricao;
+            
+            // O campo de Observações T.I. foi removido
+            
+            // Exibe o modal
+            document.getElementById('ticketModal').style.display = 'block';
+        }
+        
+        // A função saveTicketModal() foi removida
+        
+
+        // --- Dashboard e Gráficos ---
+
+        function updateDashboard() {
+            // Update status counts
+            const counts = {
+                'Em aberto': 0,
+                'Em andamento': 0,
+                'Aguardando peças': 0,
+                'Concluído': 0
+            };
+            
+            tickets.forEach(ticket => {
+                if (counts.hasOwnProperty(ticket.status)) {
+                    counts[ticket.status]++;
+                }
+            });
+            
+            document.getElementById('countEmAberto').textContent = counts['Em aberto'];
+            document.getElementById('countEmAndamento').textContent = counts['Em andamento'];
+            document.getElementById('countAguardandoPecas').textContent = counts['Aguardando peças'];
+            document.getElementById('countConcluido').textContent = counts['Concluído'];
+            
+            // Update charts
+            updateSectorChart();
+            updateUrgencyChart();
+        }
+
+        function updateSectorChart() {
+            if (!config.sectors) return;
+
+            const sectorCounts = {};
+            config.sectors.forEach(sector => {
+                sectorCounts[sector] = 0;
+            });
+            
+            tickets.forEach(ticket => {
+                if (sectorCounts.hasOwnProperty(ticket.setor)) {
+                    sectorCounts[ticket.setor]++;
+                }
+            });
+            
+            // Filtra setores com 0 tickets para um gráfico mais limpo
+            const filteredSectors = [];
+            const filteredCounts = [];
+            
+            Object.keys(sectorCounts).forEach(sector => {
+                if (sectorCounts[sector] > 0) {
+                    filteredSectors.push(sector);
+                    filteredCounts.push(sectorCounts[sector]);
+                }
+            });
+            
+            const ctx = document.getElementById('sectorChart').getContext('2d');
+            
+            if (sectorChartInstance) {
+                sectorChartInstance.destroy();
+            }
+            
+            sectorChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: filteredSectors,
+                    datasets: [{
+                        label: 'Número de Tickets',
+                        data: filteredCounts,
+                        backgroundColor: '#4A90E2',
+                        borderColor: '#0066CC',
+                        borderWidth: 1,
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y', // Gráfico de barras horizontal
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateUrgencyChart() {
+            if (!config.urgency_levels) return;
+            
+            const urgencyCounts = {};
+            config.urgency_levels.forEach(level => {
+                urgencyCounts[level] = 0;
+            });
+            
+            tickets.forEach(ticket => {
+                if (urgencyCounts.hasOwnProperty(ticket.urgencia)) {
+                    urgencyCounts[ticket.urgencia]++;
+                }
+            });
+            
+            const ctx = document.getElementById('urgencyChart').getContext('2d');
+            
+            if (urgencyChartInstance) {
+                urgencyChartInstance.destroy();
+            }
+            
+            urgencyChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(urgencyCounts),
+                    datasets: [{
+                        data: Object.values(urgencyCounts),
+                        backgroundColor: ['#28A745', '#FFC107', '#FF6B6B', '#DC3545'],
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- Funções Utilitárias ---
+
+        function showAlert(alertId, message) {
+            const alert = document.getElementById(alertId);
+            alert.textContent = message;
+            alert.classList.add('show');
+            
+            setTimeout(() => {
+                alert.classList.remove('show');
+            }, 5000);
+        }
+
+        function formatDate(isoString, dateOnly = false) {
+            if (!isoString) return '';
+            
+            const date = new Date(isoString);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            
+            if (dateOnly) {
+                return `${day}/${month}/${year}`;
+            }
+            
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            
+            return `${day}/${month}/${year} ${hours}:${minutes}`;
+        }
+        
+        function truncateText(text, length) {
+            if (text.length <= length) {
+                return text;
+            }
+            return text.substring(0, length) + '...';
+        }
+
+    </script>
+</body>
+</html>

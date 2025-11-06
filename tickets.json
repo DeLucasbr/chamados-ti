@@ -1,0 +1,157 @@
+[
+    {
+        "id": "TICKET-1730814420001",
+        "dataAbertura": "2025-11-05T08:30:00",
+        "nome": "Maria Santos",
+        "setor": "Administrativo",
+        "tipoProblema": "Computador lento",
+        "descricao": "O computador está muito lento ao abrir programas e arquivos.",
+        "status": "Em andamento",
+        "responsaveis": [],
+        "urgencia": "Média",
+        "dataInicial": "2025-11-06",
+        "dataFinal": ""
+    },
+    {
+        "id": "TICKET-1730814420002",
+        "dataAbertura": "2025-11-04T14:15:00",
+        "nome": "João Silva",
+        "setor": "Recepção P.A",
+        "tipoProblema": "Impressora não funciona",
+        "descricao": "A impressora da recepção não está imprimindo.",
+        "status": "Em andamento",
+        "responsaveis": [
+            "Zanardi"
+        ],
+        "urgencia": "Alta",
+        "dataInicial": "2025-11-04",
+        "dataFinal": ""
+    },
+    {
+        "id": "TICKET-1730814420003",
+        "dataAbertura": "2025-11-03T10:00:00",
+        "nome": "Ana Paula Costa",
+        "setor": "Farmácia",
+        "tipoProblema": "Sistema travando",
+        "descricao": "O sistema de farmácia trava constantemente.",
+        "status": "Aguardando peças",
+        "responsaveis": [
+            "Mitcheuser"
+        ],
+        "urgencia": "Crítica",
+        "dataInicial": "2025-11-03",
+        "dataFinal": ""
+    },
+    {
+        "id": "TICKET-1730814420004",
+        "dataAbertura": "2025-11-02T16:45:00",
+        "nome": "Carlos Oliveira",
+        "setor": "RH",
+        "tipoProblema": "Acesso ao sistema",
+        "descricao": "Não consigo acessar o sistema de RH.",
+        "status": "Concluído",
+        "responsaveis": [
+            "Amorim"
+        ],
+        "urgencia": "Média",
+        "dataInicial": "2025-11-02",
+        "dataFinal": "2025-11-03"
+    },
+    {
+        "nome": "Lucas Amorim Sena Souza",
+        "setor": "UTI",
+        "tipoProblema": "Impressora não imprime",
+        "descricao": "Impressora reinicia e não imprime",
+        "id": "TICKET-1762353541145",
+        "dataAbertura": "2025-11-05T11:39:01.145111",
+        "status": "Concluído",
+        "responsaveis": [
+            "Mitcheuser"
+        ],
+        "urgencia": "Média",
+        "dataInicial": "2025-11-05",
+        "dataFinal": "2025-11-05"
+    },
+    {
+        "nome": "Lucas Amorim Sena Souza",
+        "setor": "Pré-Faturamento",
+        "tipoProblema": "jkjkl",
+        "descricao": "jhkhjkljkjkljkljkljkljklçj",
+        "id": "TICKET-1762353886204",
+        "dataAbertura": "2025-11-05T11:44:46.204351",
+        "status": "Concluído",
+        "responsaveis": [
+            "MITCHEUSER"
+        ],
+        "urgencia": "Média",
+        "dataInicial": "2025-11-05",
+        "dataFinal": "2025-11-05"
+    },
+    {
+        "nome": "Gustavo Ulian Zanardi",
+        "setor": "Recepção P.A",
+        "tipoProblema": "Meu computador não liga",
+        "descricao": "Meu computador está fora da tomada e não está ligando, oque pode ser?",
+        "id": "TICKET-1762434358239",
+        "dataAbertura": "2025-11-06T10:05:58.239743",
+        "status": "Em aberto",
+        "responsaveis": [],
+        "urgencia": "Média",
+        "dataInicial": "",
+        "dataFinal": ""
+    },
+    {
+        "nome": "Evelyn Kevlin",
+        "setor": "UTI",
+        "tipoProblema": "Problema na impressora",
+        "descricao": "minha impressora não está imprimindo como eu gostaria",
+        "id": "TICKET-1762445947525",
+        "dataAbertura": "2025-11-06T13:19:07.525325",
+        "status": "Em aberto",
+        "responsaveis": [],
+        "urgencia": "Média",
+        "dataInicial": "",
+        "dataFinal": ""
+    },
+    {
+        "nome": "Lucas Amorim Sena Souza",
+        "setor": "Administrativo",
+        "tipoProblema": "Impressora não imprime",
+        "descricao": "aksjdkljawkljdkljakljwdklawjkdlajkldjawkl",
+        "id": "TICKET-1762446863677",
+        "dataAbertura": "2025-11-06T13:34:23.677361",
+        "status": "Em aberto",
+        "responsaveis": [],
+        "urgencia": "Média",
+        "dataInicial": "",
+        "dataFinal": ""
+    },
+    {
+        "nome": "Gustavo Ulian Zanardi",
+        "setor": "Pré-Faturamento",
+        "tipoProblema": "Meu computador não liga",
+        "descricao": "ksdksdfddfd",
+        "id": "TICKET-1762447907424",
+        "dataAbertura": "2025-11-06T13:51:47.424448",
+        "status": "Em aberto",
+        "responsaveis": [],
+        "urgencia": "Média",
+        "dataInicial": "",
+        "dataFinal": ""
+    },
+    {
+        "nome": "Willian Mitcheuser",
+        "setor": "TESOURARIA",
+        "tipoProblema": "SPDATA NÃO CONECTA",
+        "descricao": "DESDE A ATUALIZAÇÃO O PC NÃO ACESSA O SPDATA",
+        "id": "TICKET-1762447950037",
+        "dataAbertura": "2025-11-06T13:52:30.037509",
+        "status": "Em aberto",
+        "responsaveis": [
+            "Mitcheuser"
+        ],
+        "urgencia": "Média",
+        "dataInicial": "",
+        "dataFinal": ""
+    }
+]
