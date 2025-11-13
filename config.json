@@ -1,15 +1,15 @@
 {
     "sectors": [
-        "Administrativo",
-        "Faturamento Conv\u00eanios",
-        "Faturamento SUS",
-        "Pr\u00e9-Faturamento",
-        "Recep\u00e7\u00e3o Especialidades",
-        "Recep\u00e7\u00e3o Imagens",
-        "Recep\u00e7\u00e3o P.A",
+        "ADMINISTRATIVO",
+        "FATURAMENTO CONV\u00caNIOS",
+        "FATURAMENTO SUS",
+        "PRE-FATURAMENTO",
+        "RECEP\u00c7\u00c3O ESPECIALIDADES",
+        "RECEP\u00c7\u00c3O IMAGENS",
+        "RECEP\u00c7\u00c3O P.A",
         "P.A",
-        "Hemodi\u00e1lise",
-        "Farm\u00e1cia",
+        "HEMODI\u00c1LISE",
+        "FARM\u00c1CIA",
         "SHIBATA",
         "PALANDRI",
         "ALMOXARIFADO",
@@ -19,14 +19,21 @@
         "RH",
         "AUDITORIA",
         "UTI",
-        "CENTRO CIR\u00daRGICO",
-        "MANUTEN\u00c7\u00c3O"
+        "CENTRO CIRURGICO",
+        "MANUTEN\u00c7\u00c3O",
+        "OUTROS"
     ],
     "it_team": [
         "Zanardi",
         "Castilho",
         "Mitcheuser",
         "Amorim"
+    ],
+    "it_team_emails": [
+        "ti@hospitalsantaclaracolorado.com.br",
+        "tisuporte@hospitalsantaclaracolorado.com.br",
+        "aux.ti@hospitalsantaclaracolorado.com.br",
+        "marketing@hospitalsantaclaracolorado.com.br"
     ],
     "status_options": [
         "Em aberto",
@@ -43,5 +50,14 @@
     "credentials": {
         "username": "admin",
         "password": "hospital123"
+    },
+    "email_config": {
+        "MAIL_USERNAME": "lucasassouza.ls@gmail.com",
+        "MAIL_PASSWORD": "iqxkctcyymmwbmzn",
+        "MAIL_FROM": "lucasassouza.ls@gmail.com",
+        "MAIL_PORT": 587,
+        "MAIL_SERVER": "smtp.gmail.com",
+        "MAIL_STARTTLS": true,
+        "MAIL_SSL_TLS": false
     }
 }
