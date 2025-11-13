@@ -338,14 +338,15 @@
             background: #f1f7ff;
         }
 
-        /* Definição das larguras das colunas */
+        /* Definição das larguras das colunas (8 colunas) */
         table th:nth-child(1), table td:nth-child(1) { width: 14%; } /* ID */
         table th:nth-child(2), table td:nth-child(2) { width: 15%; } /* Nome */
-        table th:nth-child(3), table td:nth-child(3) { width: 13%; } /* Setor */
+        table th:nth-child(3), table td:nth-child(3) { width: 12%; } /* Setor */
         table th:nth-child(4), table td:nth-child(4) { width: 15%; } /* Tipo */
-        table th:nth-child(5), table td:nth-child(5) { width: 13%; } /* Urgência */
-        table th:nth-child(6), table td:nth-child(6) { width: 15%; } /* Responsáveis */
-        table th:nth-child(7), table td:nth-child(7) { width: 15%; } /* Data Inicial/Final */
+        table th:nth-child(5), table td:nth-child(5) { width: 12%; } /* Status */
+        table th:nth-child(6), table td:nth-child(6) { width: 10%; } /* Urgência */
+        table th:nth-child(7), table td:nth-child(7) { width: 14%; } /* Responsáveis */
+        table th:nth-child(8), table td:nth-child(8) { width: 12%; } /* Datas */
 
 
         table input[type="date"],
@@ -713,6 +714,7 @@
                                 <th>Nome</th>
                                 <th>Setor</th>
                                 <th>Tipo</th>
+                                <th>Status</th>
                                 <th>Urgência</th>
                                 <th>Responsáveis</th>
                                 <th>Datas</th>
@@ -722,6 +724,28 @@
                         </tbody>
                     </table>
                 </div>
+
+                <!-- NOVA SEÇÃO PARA TICKETS CONCLUÍDOS -->
+                <h2 style="margin-top: 40px; margin-bottom: 20px;">Tickets Concluídos</h2>
+                <div class="table-container">
+                    <table id="ticketsConcluidosTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Setor</th>
+                                <th>Tipo</th>
+                                <th>Status</th>
+                                <th>Urgência</th>
+                                <th>Responsáveis</th>
+                                <th>Datas</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ticketsConcluidosTableBody">
+                        </tbody>
+                    </table>
+                </div>
+                
             </div>
             
             <div class="dashboard">
@@ -1087,8 +1111,11 @@
 
         // Renderiza a tabela principal com base nos filtros
         function renderTicketsTable() {
-            const tbody = document.getElementById('ticketsTableBody');
-            tbody.innerHTML = '';
+            const tbodyAtivos = document.getElementById('ticketsTableBody');
+            const tbodyConcluidos = document.getElementById('ticketsConcluidosTableBody');
+            
+            tbodyAtivos.innerHTML = '';
+            tbodyConcluidos.innerHTML = '';
             
             const filteredTickets = getFilteredTickets();
             
@@ -1149,7 +1176,13 @@
                 // Ajusta a largura da coluna de Status na Tabela
                 row.cells[4].style.width = '13%';
 
-                tbody.appendChild(row);
+                // *** LÓGICA DA DIVISÃO ***
+                // Decide em qual tabela (Ativos ou Concluídos) a linha deve entrar
+                if (ticket.status === 'Concluído') {
+                    tbodyConcluidos.appendChild(row);
+                } else {
+                    tbodyAtivos.appendChild(row);
+                }
             });
         }
 
@@ -1170,6 +1203,14 @@
             // Lógica para data final: se data final é preenchida, status muda
             if (field === 'dataFinal' && value) {
                 updatedTicket.status = 'Concluído';
+            }
+            // Lógica para status: se status muda para 'Concluído', preenche data final
+            if (field === 'status' && value === 'Concluído' && !ticket.dataFinal) {
+                updatedTicket.dataFinal = new Date().toISOString().split('T')[0]; // Data de hoje
+            }
+            // Lógica para status: se status muda de 'Concluído' para outra coisa, limpa data final
+            if (field === 'status' && value !== 'Concluído' && ticket.status === 'Concluído') {
+                updatedTicket.dataFinal = '';
             }
             
             try {

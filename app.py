@@ -8,8 +8,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, EmailStr
 from typing import List, Optional
 
-# --- Constantes ---
-DB_FILE = "tickets.json"
+# --- Constantes (CORREÇÃO DE CAMINHO) ---
+# Encontra o diretório ONDE O SCRIPT app.py ESTÁ.
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Cria caminhos absolutos para todos os arquivos
+DB_FILE = os.path.join(BASE_DIR, "tickets.json")
+CONFIG_FILE = os.path.join(BASE_DIR, "config.json")
+INDEX_FILE = os.path.join(BASE_DIR, "index.html")
+
 
 # --- Modelos de Dados (Pydantic) ---
 
@@ -59,7 +66,8 @@ app.add_middleware(
 def load_config():
     """Carrega as configurações (setores, etc.) do arquivo config.json"""
     try:
-        with open("config.json", "r", encoding="utf-8") as f:
+        # Usa o caminho absoluto
+        with open(CONFIG_FILE, "r", encoding="utf-8") as f:
             return json.load(f)
     except FileNotFoundError:
         # Se não achar o arquivo, cria uma config padrão
@@ -79,15 +87,18 @@ def load_config():
                 "password": "hospital123"
             }
         }
-        with open("config.json", "w", encoding="utf-8") as f:
+        # Usa o caminho absoluto
+        with open(CONFIG_FILE, "w", encoding="utf-8") as f:
             json.dump(default_config, f, indent=4)
         return default_config
 
 def load_tickets_db():
     """Carrega todos os tickets do arquivo JSON"""
+    # Usa o caminho absoluto
     if not os.path.exists(DB_FILE):
         return [] # Retorna lista vazia se o arquivo não existe
     try:
+        # Usa o caminho absoluto
         with open(DB_FILE, "r", encoding="utf-8") as f:
             data = json.load(f)
             # Converte os dicts para instâncias do modelo Ticket
@@ -97,6 +108,7 @@ def load_tickets_db():
     except Exception: # Pega outros erros de validação do Pydantic se o JSON estiver defasado
         # Se um ticket antigo tiver 'observacoesTI', o Pydantic vai falhar
         # Vamos carregar os dados brutos e filtrar
+        # Usa o caminho absoluto
         with open(DB_FILE, "r", encoding="utf-8") as f:
             data = json.load(f)
             tickets_validos = []
@@ -112,6 +124,7 @@ def load_tickets_db():
 
 def save_tickets_db(tickets: List[Ticket]):
     """Salva a lista completa de tickets no arquivo JSON"""
+    # Usa o caminho absoluto
     with open(DB_FILE, "w", encoding="utf-8") as f:
         # Converte as instâncias do modelo Ticket de volta para dicts
         json.dump([ticket.model_dump() for ticket in tickets], f, indent=4)
@@ -204,7 +217,8 @@ async def update_ticket_route(ticket_id: str, ticket_update: Ticket):
 @app.get("/")
 async def get_index():
     """Serve o arquivo index.html principal"""
-    return FileResponse("index.html")
+    # Usa o caminho absoluto
+    return FileResponse(INDEX_FILE)
 
 # --- Execução do Servidor ---
 
