@@ -1,0 +1,47 @@
+{
+    "sectors": [
+        "Administrativo",
+        "Faturamento Conv\u00eanios",
+        "Faturamento SUS",
+        "Pr\u00e9-Faturamento",
+        "Recep\u00e7\u00e3o Especialidades",
+        "Recep\u00e7\u00e3o Imagens",
+        "Recep\u00e7\u00e3o P.A",
+        "P.A",
+        "Hemodi\u00e1lise",
+        "Farm\u00e1cia",
+        "SHIBATA",
+        "PALANDRI",
+        "ALMOXARIFADO",
+        "CONTABILIDADE",
+        "TESOURARIA",
+        "FAE",
+        "RH",
+        "AUDITORIA",
+        "UTI",
+        "CENTRO CIR\u00daRGICO",
+        "MANUTEN\u00c7\u00c3O"
+    ],
+    "it_team": [
+        "Zanardi",
+        "Castilho",
+        "Mitcheuser",
+        "Amorim"
+    ],
+    "status_options": [
+        "Em aberto",
+        "Em andamento",
+        "Aguardando pe\u00e7as",
+        "Conclu\u00eddo"
+    ],
+    "urgency_levels": [
+        "Baixa",
+        "M\u00e9dia",
+        "Alta",
+        "Cr\u00edtica"
+    ],
+    "credentials": {
+        "username": "admin",
+        "password": "hospital123"
+    }
+}

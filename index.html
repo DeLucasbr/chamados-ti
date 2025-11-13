@@ -592,6 +592,43 @@
             from { transform: translateY(-50px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
+        
+        /* --- NOVOS ESTILOS PARA OS "PILLS" DE RESPONSÁVEIS --- */
+        .responsible-container {
+            display: flex;
+            flex-wrap: wrap; /* Permite que os pills quebrem a linha se não houver espaço */
+            gap: 6px; /* Espaçamento entre os pills */
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .responsible-pill {
+            padding: 5px 10px;
+            border-radius: 15px; /* Bordas arredondadas */
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none; /* Impede que o texto seja selecionado ao clicar */
+            border: 1px solid transparent;
+        }
+
+        .responsible-pill.selected {
+            background-color: var(--color-primary); /* Azul (selecionado) */
+            color: var(--color-white);
+        }
+
+        .responsible-pill.deselected {
+            background-color: var(--color-gray-light); /* Cinza claro (não selecionado) */
+            color: var(--color-dark);
+            border: 1px solid #d1d5db;
+        }
+        
+        .responsible-pill:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        /* --- FIM DOS NOVOS ESTILOS --- */
 
     </style>
 </head>
@@ -619,8 +656,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="email">Email (Opcional)</label>
-                    <input type="email" id="email" name="email" placeholder="seu.email@hospital.com">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" name="email" placeholder="seu.email@hospital.com" required>
                 </div>
                 
                 <div class="form-group">
@@ -1002,6 +1039,15 @@
                 showAlert('errorAlert', 'Por favor, selecione um setor');
                 return;
             }
+            if (!email) {
+                showAlert('errorAlert', 'Por favor, informe um email');
+                return;
+            }
+            // Validação básica de formato de email
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showAlert('errorAlert', 'Por favor, informe um email válido');
+                return;
+            }
             if (descricao.length < 10) {
                 showAlert('errorAlert', 'Descrição deve ter pelo menos 10 caracteres');
                 return;
@@ -1149,11 +1195,17 @@
                         </select>
                     </td>
                     <td>
-                        <select multiple onchange="updateTicket('${ticket.id}', 'responsaveis', Array.from(this.selectedOptions).map(o => o.value))">
-                            ${config.it_team.map(member => 
-                                `<option value="${member}" ${ticket.responsaveis.includes(member) ? 'selected' : ''}>${member}</option>`
-                            ).join('')}
-                        </select>
+                        <!-- ESTA É A GRANDE MUDANÇA: O <select multiple> foi removido -->
+                        <div class="responsible-container">
+                            ${config.it_team.map(member => {
+                                const isResponsible = ticket.responsaveis.includes(member);
+                                const pillClass = isResponsible ? 'selected' : 'deselected';
+                                // Usamos aspas simples escapadas para os parâmetros da função
+                                return `<span class="responsible-pill ${pillClass}" onclick="toggleResponsible('${ticket.id}', '${member}')">
+                                            ${member}
+                                        </span>`;
+                            }).join('')}
+                        </div>
                     </td>
                     <td>
                         <input type="date" value="${ticket.dataInicial}" onchange="updateTicket('${ticket.id}', 'dataInicial', this.value)" style="margin-bottom: 5px;">
@@ -1184,6 +1236,30 @@
                     tbodyAtivos.appendChild(row);
                 }
             });
+        }
+
+        // --- NOVA FUNÇÃO HELPER ---
+        // Esta função é chamada pelo 'onclick' de cada pill de responsável
+        function toggleResponsible(ticketId, memberName) {
+            const ticket = tickets.find(t => t.id === ticketId);
+            if (!ticket) return;
+
+            // Clona o array de responsáveis para evitar mutação direta
+            const currentResponsaveis = [...ticket.responsaveis];
+            
+            const index = currentResponsaveis.indexOf(memberName);
+            
+            if (index > -1) {
+                // Se já está na lista, remove
+                currentResponsaveis.splice(index, 1);
+            } else {
+                // Se não está na lista, adiciona
+                currentResponsaveis.push(memberName);
+            }
+            
+            // Chama a função de atualização existente com o novo array
+            // A função updateTicket já atualiza o backend e renderiza a tabela
+            updateTicket(ticketId, 'responsaveis', currentResponsaveis);
         }
 
         // Atualiza um campo do ticket (chamado pelos 'onchange' da tabela)
