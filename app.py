@@ -12,7 +12,10 @@ from typing import List, Optional
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 
 # --- Constantes ---
-DB_FILE = "tickets.json"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_FILE = os.path.join(BASE_DIR, "tickets.json")
+CONFIG_FILE = os.path.join(BASE_DIR, "config.json")
+INDEX_FILE = os.path.join(BASE_DIR, "index.html")
 
 # --- Modelos de Dados (Pydantic) ---
 
